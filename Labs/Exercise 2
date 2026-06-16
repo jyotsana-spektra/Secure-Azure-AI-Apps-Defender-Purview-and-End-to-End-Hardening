@@ -1,0 +1,128 @@
+# Exercise 02: Apply security and governance controls for the AI app
+
+### Estimated Duration: 45 Minutes
+
+## Scenario
+
+Your Azure AI application is now deployed, but it still needs security controls that protect the app, its supporting data, and the AI interaction surface. In this exercise, you will use Microsoft Defender for Cloud as the primary security plane to review recommendations and enable key protections for App Service, Storage, and AI services. You will then use Microsoft Purview as a supporting governance control to confirm that AI interaction data can be governed and investigated as part of a broader secure AI lifecycle.
+
+## Overview
+
+In this exercise, you will sign in to Azure, review the deployed AI application resources, enable and inspect Defender-related protections, and validate the governance connection for AI interactions through Purview. The tasks are designed to align to the deployed Azure App Service, Azure OpenAI, and Azure Storage resources associated with **<inject key="DeploymentID" enableCopy="false"></inject>**.
+
+## Objectives
+
+- Task 1: Sign in and locate the deployed AI application resources
+- Task 2: Enable and verify Defender protections for Storage and AI services
+- Task 3: Review and improve App Service security posture in Defender for Cloud
+- Task 4: Validate the supporting Purview governance outcome for AI interactions
+
+## Task 1: Sign in and locate the deployed AI application resources
+
+In this task, you will sign in to Azure and identify the core resources that make up the AI application baseline.
+
+1. Open a browser and go to the Azure portal at <https://portal.azure.com>.
+2. Sign in with the following credentials:
+   - **Username:** <inject key="AzureAdUserEmail"></inject>
+   - **Password:** <inject key="AzureAdUserPassword"></inject>
+3. If prompted, select the subscription **<inject key="SubscriptionID"></inject>**.
+4. In the Azure portal search bar, search for **Resource groups** and open the resource group created for your lab deployment.
+5. Identify the resources that support the AI application. Confirm that you can see the following resource types in the deployed environment:
+   - An **App Service** web app for the application front end or API
+   - An **Azure OpenAI** resource for model access
+   - An **Storage account** for application content or grounded data samples
+6. Keep a note of the exact resource names because you will use them throughout the exercise.
+7. Open the App Service resource in a new browser tab so that you can return to it later.
+8. Open the storage account in a new browser tab so that you can return to it later.
+9. Return to the resource group overview and verify that all core resources are in the **Succeeded** provisioning state.
+
+> [!Tip]
+> If you are unsure which environment belongs to you, use the deployment-specific identifier **<inject key="DeploymentID" enableCopy="false"></inject>** to confirm you are working in the correct lab resources.
+
+## Task 2: Enable and verify Defender protections for Storage and AI services
+
+In this task, you will use Microsoft Defender for Cloud to enable or confirm protection for the storage and AI portions of the application.
+
+1. In the Azure portal search bar, search for **Microsoft Defender for Cloud** and open it.
+2. From the left menu, select **Environment settings**.
+3. Select the subscription **<inject key="SubscriptionID"></inject>**.
+4. Review the **Defender plans** page.
+5. Locate the **Storage** plan.
+6. If the Storage plan is not already enabled, select the ellipsis (**...**) or choose **Settings** as available in the current experience, then turn **Storage** to **On** and save the change.
+7. After enabling the plan, review the available Storage protection settings and note that **on-upload malware scanning** and **sensitive data threat detection** are part of Defender for Storage.
+8. Still in the Defender plans area, locate **AI services**.
+9. Turn **AI services** to **On** if it is not already enabled.
+10. Select **Settings** for **AI services**.
+11. Review the available AI protection components.
+12. Confirm that the AI services protection configuration includes options such as:
+    - **Suspicious prompt evidence**
+    - **Enable data security for AI interactions**
+    - **AI model security**
+13. Enable **Enable data security for AI interactions** if it is available and currently turned off.
+14. Select **Continue** or **Save** to apply the AI services settings.
+15. Return to the storage account tab that you opened earlier.
+16. In the storage account left menu, under **Security + networking**, select **Microsoft Defender for Cloud**.
+17. Confirm that Defender for Storage is enabled for the storage account and review any account-level settings that are shown.
+18. Record that the storage account is now under Defender-backed protection for malware scanning and sensitive data threat detection.
+
+> [!Important]
+> Microsoft Learn recommends enabling Defender for Storage at the subscription level so that current and future storage accounts in the subscription are protected consistently.
+
+> [!Note]
+> The Purview-related AI interaction setting is a supporting governance capability. In many organizations, its visibility depends on the correct licensing and tenant configuration, but the required control in this lab is to verify and enable the Defender-side integration point when available.
+
+## Task 3: Review and improve App Service security posture in Defender for Cloud
+
+In this task, you will review Defender for Cloud recommendations that apply to the App Service workload and then confirm key hardening settings directly on the web app.
+
+1. Return to **Microsoft Defender for Cloud**.
+2. In the left menu, select **Recommendations**.
+3. Use the filters to narrow the list to the lab resource group or to **Resource type** entries related to **App Service**, **Web Apps**, or the deployed web app resource.
+4. Review the recommendations that apply to the App Service resource.
+5. Look for recommendations commonly associated with App Service hardening, such as:
+   - **Web Application should only be accessible over HTTPS**
+   - **TLS should be updated to the latest version for web apps**
+   - **Managed identity should be used in your Web App**
+   - **Remote debugging should be turned off for Web Applications**
+   - **Microsoft Defender for App Service should be enabled**
+6. Open the deployed App Service resource.
+7. In the App Service left menu, under **Settings**, select **Configuration**.
+8. On the **General settings** tab, verify the following settings:
+   - **HTTPS Only** is set to **On**
+   - **Minimum TLS Version** is set to **1.2** or later if that option is available in the lab environment
+   - **Remote debugging** is **Off** if the setting is present
+9. If any of these settings are not configured to the secure value, update them now and select **Save**.
+10. In the App Service left menu, select **Identity**.
+11. On the **System assigned** tab, turn **Status** to **On** if it is currently **Off**.
+12. Select **Save**.
+13. Wait for the identity assignment to complete.
+14. Return to **Microsoft Defender for Cloud** and refresh the recommendations view if needed.
+15. Confirm that your web app now reflects a stronger security posture, even if recommendation status changes take additional time to update.
+
+> [!Tip]
+> Defender recommendations can take time to refresh after a remediation. If a recommendation still appears immediately after you apply a change, wait a few minutes and refresh the page.
+
+<question>
+
+## Task 4: Validate the supporting Purview governance outcome for AI interactions
+
+In this task, you will review the governance side of the secure AI lifecycle by validating the Purview integration point and the expected investigation surface.
+
+1. Return to **Microsoft Defender for Cloud** and open **Environment settings** for **<inject key="SubscriptionID"></inject>** if needed.
+2. Open **Settings** for **AI services** again.
+3. Confirm that **Enable data security for AI interactions** is enabled, or note that this is the control used to allow Microsoft Purview to access and analyze prompts, responses, and related metadata.
+4. Open a new browser tab and go to the Microsoft Purview portal at <https://purview.microsoft.com>.
+5. Sign in with the same lab credentials if prompted:
+   - **Username:** <inject key="AzureAdUserEmail"></inject>
+   - **Password:** <inject key="AzureAdUserPassword"></inject>
+6. In the Purview portal, review the available solutions and locate areas used for governance and investigation, such as **Audit**, **Activity explorer**, or **DSPM for AI** if they are available in the tenant experience.
+7. Confirm that Purview is the supporting governance plane that can be used to review AI interactions, auditing data, and classification-related outcomes.
+8. If your tenant exposes **Activity explorer**, open it and note that it provides filtered investigation views for protected or sensitive activities.
+9. If your tenant exposes **DSPM for AI** or an **AI activities** experience, note that it can surface AI interaction insights when the integration is enabled and supported.
+10. Do not spend time troubleshooting missing premium features unless directed by your instructor. The key lab outcome is to verify the governance integration point from Defender for Cloud and understand where Purview evidence would be reviewed.
+
+<validation step="Validation 2"/>
+
+## Summary
+
+In this exercise, you applied Microsoft Defender for Cloud controls to the deployed Azure AI application by enabling or reviewing protection for Storage and AI services and by improving the App Service security posture with recommended hardening settings. You also validated the supporting governance path through Microsoft Purview so the AI app can be monitored and governed as part of a secure, end-to-end lifecycle.
