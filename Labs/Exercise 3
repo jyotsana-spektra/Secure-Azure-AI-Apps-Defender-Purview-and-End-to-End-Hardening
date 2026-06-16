@@ -1,0 +1,104 @@
+# Exercise 03: Validate End-to-End Hardening of the AI App
+
+### Estimated Duration: 45 Minutes
+
+## Scenario
+
+Your Azure AI application baseline is deployed, and the main hardening controls have been applied. In this capstone exercise, you will validate that the application now reflects the target security posture across application access, storage/data handling, and monitoring/governance outcomes. You will use Azure portal views and targeted verification steps to prove that the environment is not only running, but also secured in a way that aligns to the secure-agents-across-the-lifecycle theme.
+
+## Overview
+
+In this exercise, you will sign in to Azure, locate the deployed resources tied to your deployment, verify that the App Service and Storage account reflect the expected hardened configuration, and confirm that Defender for Cloud and the supporting Purview governance outcome can be demonstrated as part of the final state.
+
+## Objectives
+
+- Task 1: Sign in and identify the deployed AI application resources
+- Task 2: Validate application and data protection controls
+- Task 3: Validate monitoring and governance outcomes
+
+## Task 1: Sign in and identify the deployed AI application resources
+
+In this task, you will sign in to the Azure portal and confirm the resource set associated with your deployment.
+
+1. Open a browser and go to [https://portal.azure.com](https://portal.azure.com).
+2. Sign in using the following credentials:
+   - **Username:** `<inject key="AzureAdUserEmail"></inject>`
+   - **Password:** `<inject key="AzureAdUserPassword"></inject>`
+3. In the Azure portal search bar, search for and open **Resource groups**.
+4. Locate the resource group associated with your deployment. If more than one resource group is present, identify the correct one by matching the naming pattern or deployment timestamp associated with **<inject key="DeploymentID" enableCopy="false"/>**.
+5. Open the resource group and review the deployed resources.
+6. Confirm that the environment includes the expected AI application components:
+   - An **Azure App Service** web app
+   - An **Azure OpenAI** resource
+   - An **Azure Storage account**
+   - Any related supporting resources created during deployment
+7. Select the App Service resource and record its name for the next tasks.
+8. Return to the resource group and select the Storage account resource.
+9. Record the Storage account name for later verification.
+
+> [!Note]
+> The exact resource names can vary by deployment. Use the resource group created for your lab deployment as the authoritative scope for this exercise.
+
+## Task 2: Validate application and data protection controls
+
+In this task, you will confirm that the application entry point and storage layer reflect the expected hardening state.
+
+1. In the resource group, open the **App Service** resource.
+2. In the left menu, under **Settings**, select **Networking**.
+3. Under **Inbound traffic configuration**, select **Public network access** to review the access restrictions configuration.
+4. On the **Access Restrictions** page, inspect the configured rules.
+5. Verify that the app is no longer configured as broadly open without review and that the access rule set reflects the restrictions you applied earlier in the lab.
+6. Confirm that the rule list shows the expected allow or deny behavior and that the unmatched rule behavior aligns with the hardened design used in this lab.
+7. Return to the App Service **Overview** page and, if an application URL is shown, select it in a new browser tab.
+8. Confirm one of the following outcomes based on your hardening path:
+   - The application is reachable only through the intended path, or
+   - Access is restricted and direct browsing is blocked as expected
+9. Close the application tab and return to the resource group.
+10. Open the **Storage account** resource.
+11. In the left menu, under **Settings**, select **Configuration**.
+12. Review the following settings:
+    - **Secure transfer required**
+    - **Allow Blob anonymous access**
+13. Confirm that **Secure transfer required** is set to **Enabled**.
+14. Confirm that **Allow Blob anonymous access** is set to **Disabled**.
+15. Select **Overview**, then review the storage account endpoints and general posture to confirm the account is present and operational after hardening.
+16. Capture a mental checklist that the data layer now enforces HTTPS-based access and does not allow anonymous blob exposure at the account level.
+
+> [!Important]
+> For App Service, Azure access restrictions are managed from **Settings > Networking > Public network access > Access Restrictions**. For Azure Storage, the hardening verification in this lab is centered on **Settings > Configuration**.
+
+> [!Tip]
+> If your portal view does not immediately reflect a recent configuration change, refresh the resource blade before concluding that a control was not applied.
+
+## Task 3: Validate monitoring and governance outcomes
+
+In this task, you will confirm that Microsoft Defender for Cloud and the supporting Purview governance experience can be used to demonstrate the final hardened state.
+
+1. In the Azure portal, search for and open **Microsoft Defender for Cloud**.
+2. On the Defender for Cloud landing page, review the overview information for your subscription **<inject key="SubscriptionID"></inject>**.
+3. Select **Secure score** and review the score details for the subscription.
+4. Examine the listed recommendations and controls, focusing on the resources used in this lab, such as App Service and Storage.
+5. Confirm that the environment now shows a hardened posture relative to the baseline and that any remaining recommendations can be explained as outside the scope of this lab or pending evaluation refresh.
+6. Return to the Defender for Cloud menu and select **Regulatory compliance**.
+7. Review the compliance dashboard and inspect any control or assessment relevant to App Service, Storage, encryption, or secure configuration.
+8. Verify that the dashboard provides evidence you can use to explain the governance and compliance posture of the deployed AI application.
+9. Open a new browser tab and go to [https://purview.microsoft.com](https://purview.microsoft.com).
+10. Sign in with the same lab credentials if prompted:
+    - **Username:** `<inject key="AzureAdUserEmail"></inject>`
+    - **Password:** `<inject key="AzureAdUserPassword"></inject>`
+11. Review the Microsoft Purview portal home experience or assigned governance view available in the tenant.
+12. Confirm the supporting governance outcome expected in this lab, such as visibility into governance capabilities, catalog/governance navigation, or the Purview-based step completed earlier in the lab.
+13. Return to the Azure portal and revisit the lab resource group.
+14. Validate that the final environment tells a complete hardening story:
+    - The AI app resources are deployed and identifiable
+    - Application access is reviewed and restricted according to design
+    - Storage is configured to require secure transfer and block anonymous blob access
+    - Defender for Cloud provides security posture and compliance evidence
+    - Purview provides the supporting governance outcome included in the lab design
+15. Prepare to communicate this end-to-end validation as your final proof that the AI application is hardened across app, data, and monitoring/governance checks.
+
+<validation step="End-to-end hardening proof"/>
+
+## Summary
+
+In this exercise, you validated the hardened end state of the Azure AI application by confirming the deployed architecture, reviewing App Service access restrictions, checking Storage account data protection settings, and using Defender for Cloud and Microsoft Purview as evidence of security posture and governance readiness. This capstone demonstrates that the application is not only deployed successfully, but also secured and governable across its lifecycle.
