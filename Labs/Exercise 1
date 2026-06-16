@@ -1,0 +1,120 @@
+# Exercise 01: Deploy and Inspect the Azure AI Application Baseline
+
+### Estimated Duration: 45 Minutes
+
+## Scenario
+
+Your team is preparing a newly deployed Azure-hosted AI application for later hardening activities. Before you apply security and governance controls, you must first confirm that the clean-build environment was deployed correctly and understand how the core components work together. In this exercise, you will sign in to Azure, review the stage-1 deployment, inspect the Azure App Service, Azure OpenAI, and Azure Storage resources, and verify the baseline architecture that will be secured in the next exercises.
+
+## Overview
+
+In this exercise, you will validate the initial deployment state of the lab environment. You will identify the resource group created for your lab run, review the main resources that support the AI application, confirm that the web application is reachable, and inspect key configuration locations in the Azure portal. The goal is to understand the current starting point before making any hardening changes.
+
+## Objectives
+
+- Task 1: Sign in to Azure and locate the deployed lab resources
+- Task 2: Inspect the Azure App Service baseline configuration
+- Task 3: Review the Azure OpenAI and Storage resources
+- Task 4: Confirm the end-to-end baseline architecture
+
+## Task 1: Sign in to Azure and locate the deployed lab resources
+
+In this task, you will sign in to the Azure portal and identify the resources that were deployed for your lab instance.
+
+1. Open a browser and go to [https://portal.azure.com](https://portal.azure.com).
+2. Sign in with the following lab credentials:
+   - Username: `<inject key="AzureAdUserEmail"></inject>`
+   - Password: `<inject key="AzureAdUserPassword"></inject>`
+3. If prompted to choose a directory or tenant, confirm that you are working in tenant **`<inject key="TenantID"></inject>`**.
+4. Verify that the active subscription is **`<inject key="SubscriptionID"></inject>`**.
+5. In the Azure portal search bar, enter **Deployments** and select **Deployments**.
+6. Review the deployment history and identify the deployment associated with your lab run. Use the deployment identifier **<inject key="DeploymentID" enableCopy="false"/>** to help locate the correct deployment record if needed.
+7. Open the deployment details and review the deployed resource list.
+8. Select the resource group created for this lab deployment.
+9. On the resource group **Overview** page, identify the core resources that support the lab scenario. At minimum, confirm that you can see resources representing:
+   - An **App Service** web application
+   - An **Azure OpenAI** resource
+   - An **Azure Storage account**
+10. Keep the resource group page open for the next tasks.
+
+> [!Tip]
+> If you do not immediately recognize a resource name, use the **Type** column on the resource group overview page to distinguish **App Service**, **Cognitive Services**, and **Storage account** resources.
+
+> [!Note]
+> In this exercise, you are only validating the clean-build starting point. Do not change configuration values yet unless a step explicitly asks you to view them.
+
+## Task 2: Inspect the Azure App Service baseline configuration
+
+In this task, you will review the web application that hosts the AI app front end or API surface.
+
+1. From the resource group page, open the deployed **App Service** resource.
+2. On the **Overview** page, review the following items:
+   - The web app name
+   - The resource group name
+   - The region
+   - The **Default domain** value
+   - The **App Service plan** associated with the app
+3. Select the **Default domain** link to open the application in a new browser tab.
+4. Confirm that the application loads successfully.
+5. Return to the App Service resource in the Azure portal.
+6. In the left menu, under **Settings**, select **Environment variables**.
+7. Review the configured application settings and note any entries that reference Azure OpenAI, endpoints, storage connectivity, or related application configuration.
+8. Do not modify any values. Your goal is to understand which settings connect the app to its backend services.
+9. In the left menu, select **Identity**.
+10. Review whether a system-assigned managed identity is currently enabled for the app.
+11. Record your observations for later exercises, where you will harden the application lifecycle.
+
+> [!Important]
+> The **Environment variables** blade is a key inspection point for App Service-hosted AI applications because it often reveals how the app connects to Azure OpenAI and other dependent services.
+
+> [!Tip]
+> If the web app opens slowly on the first request, wait for the page to finish loading before deciding that the deployment failed.
+
+## Task 3: Review the Azure OpenAI and Storage resources
+
+In this task, you will inspect the AI and data resources that support the application.
+
+1. Return to the resource group page.
+2. Open the deployed **Azure OpenAI** resource.
+3. On the **Overview** page, review the resource name, location, and pricing tier.
+4. In the left menu, under **Resource Management**, select **Keys and Endpoint**.
+5. Review the endpoint format and confirm that keys are present for the resource.
+6. Do not copy or rotate any keys.
+7. If the deployment includes model deployments visible through the resource experience, review the available deployment names so you understand what the application can call.
+8. Return to the resource group page.
+9. Open the deployed **Storage account** resource.
+10. On the **Overview** page, review the storage account name, region, and performance or redundancy settings shown on the summary page.
+11. In the left menu, select **Data storage** > **Containers**.
+12. Review whether the account contains any blob containers used by the application for content, prompt artifacts, or grounded data samples.
+13. Return to the storage account left menu and select **Security + networking** or **Networking** if available in your portal view.
+14. Review the current network access posture without changing it.
+15. Record what you observe as the baseline storage exposure and data access state.
+
+> [!Note]
+> Azure OpenAI commonly exposes connection details through **Keys and Endpoint**, while Azure Storage surfaces content locations through **Data storage > Containers**. These are inspection points only in this exercise.
+
+## Task 4: Confirm the end-to-end baseline architecture
+
+In this task, you will connect the resources you reviewed into a single baseline architecture picture.
+
+1. Return to the resource group **Overview** page.
+2. Verify that the deployed resources align to the lab architecture:
+   - **App Service** hosts the application interface or API
+   - **Azure OpenAI** provides model inference capability
+   - **Storage account** stores application or data artifacts
+3. Open the web app again by selecting the **Default domain** from the App Service overview page.
+4. Confirm that the application is reachable from the browser.
+5. Based on your inspection, identify at least three baseline security considerations that should be reviewed in the next exercise. Examples include:
+   - How the app stores secrets or connection values
+   - Whether managed identity is enabled
+   - Whether storage network access is restricted
+   - How Azure OpenAI access is controlled
+   - What monitoring and security signals are currently visible
+6. Keep the resource names available for later hardening and validation tasks.
+7. When you are finished, ensure the deployed environment still reflects a clean starting state with no manual hardening changes applied yet.
+
+<validation step="Baseline Azure AI application resources"/>
+
+## Summary
+
+In this exercise, you confirmed that the stage-1 deployment produced the expected Azure AI application baseline. You located the lab deployment, reviewed the App Service web application, inspected the Azure OpenAI and Storage resources, and verified that the environment is reachable and ready for hardening. You will use these observations in the next exercise to apply security and governance controls across the AI application lifecycle.
